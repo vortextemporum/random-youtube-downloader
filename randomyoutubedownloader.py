@@ -218,6 +218,7 @@ def ytfetch(queryChoice,videoAmount,videoDuration,keyword,orderBy):
                         videolist.append(videoId)
                         iteration += 1
     
+    os.makedirs("./json", exist_ok=True)
 
     with open('./json/{}.json'.format(jsonname), 'a') as outfile: 
         dumpdump = {"Search": {"searchDate": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "queryChoice:": keyword, "videoAmount": videoAmount, "videoDuration": videoDuration, "Order by": orderBy}}
@@ -236,7 +237,7 @@ def ytfetch(queryChoice,videoAmount,videoDuration,keyword,orderBy):
 
     
 def ytDownload(jsonname, videolist):    
-    
+    os.makedirs("output", exist_ok=True)
     os.mkdir("output/{}".format(jsonname))
 
     class MyLogger(object):
