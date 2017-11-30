@@ -20,7 +20,8 @@ def Main():
     print('3. Use german words')
     print('4. Use japanese words')
     print('5. Use all languages listed above')
-    print('6. Type your own keyword')
+    print('6. Random letters + digits')
+    print('7. Type your own keyword')
     
     while True:
         queryChoice = input('Select: ')
@@ -45,6 +46,10 @@ def Main():
             keyword = "Random"
             break
         elif queryChoice == "6":
+            print('Imma gonna generate random letters and digits!')
+            keyword = "Random letters + digits"
+            break
+        elif queryChoice == "7":
             print('So what do you want to search for?')
             keyword = input("Your keyword: ")
             break
@@ -153,6 +158,11 @@ def Query(queryChoice):
         file_ = _files[number]
         query = random.choice(open('languages/{}'.format(file_)).read().splitlines())
         return query
+    elif queryChoice == "6":
+        size = random.randint(3,5)
+        return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(size))
+        
+        
     
 
 def ytfetch(queryChoice,videoAmount,videoDuration,keyword,orderBy):
@@ -172,7 +182,7 @@ def ytfetch(queryChoice,videoAmount,videoDuration,keyword,orderBy):
       
     while iteration <= videoAmount:
             #parsing url
-            if queryChoice in ["1","2","3","4","5"]:
+            if queryChoice in ["1","2","3","4","5","6"]:
                 query_ = Query(queryChoice)
                 maxresults = 1
             else:
@@ -189,6 +199,7 @@ def ytfetch(queryChoice,videoAmount,videoDuration,keyword,orderBy):
             
             if 'items' in results:
                 if results['items'] == "":
+                    print("Couldn't find anything with {}".format(keyword))
                     iteration = iteration
                 else:
                     for data in results['items']:
@@ -250,8 +261,9 @@ def ytDownload(jsonname, videolist):
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
-            'preferredquality': '192'
+            'preferredquality': '192',
         }],
+        'ignoreerrors': True,
         'logger': MyLogger(),
         'progress_hooks': [my_hook],
     }
