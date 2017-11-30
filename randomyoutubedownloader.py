@@ -50,8 +50,9 @@ def Main():
             break
         else:
             print('Dude... Please... Select... Something... Between... 1-6')
-
+    print("You chose: {}".format(keyword))
     #videoAmount select
+    print("----------------------------")
     print('How many videos would you like to get? Max 200')
     while True:
         userChoice = int(input("Amount: "))
@@ -62,6 +63,7 @@ def Main():
         else:
             print("Please write something between 1 and 200.")
     print('Video amount is {}'.format(videoAmount))
+    print("----------------------------")
 
     #videoDuration select
     print('Do you have any preference for duration?')
@@ -69,7 +71,7 @@ def Main():
     print('2. Medium')
     print('3. Long')
     print('4. Naah, just give me random videos!')
-
+    
     while True:
         userChoice = int(input('Duration: '))
         if userChoice == 1:
@@ -87,12 +89,44 @@ def Main():
         else:
             print('Aaaaaargh, please choose 1, 2, 3 or 4. PLEASE.')
 
+    #Order by
     print("You chose {}".format(videoDuration))
-            
+    print("----------------------------")
+    print("Order by?")
+    print("1. Relevance")
+    print("2. Date")
+    print("3. Rating")
+    print("4. Title")
+    print("5. View Count (highest to lowest)")
+
+    
+   
+    while True:
+        userChoice = input("Select: ")
+        if userChoice == "1":
+            orderBy = "relevance"
+            break
+        elif userChoice == "2":
+            orderBy = "date"
+            break
+        elif userChoice == "3":
+            orderBy = "rating"
+            break
+        elif userChoice == "4":
+            orderBy = "title"
+            break
+        elif userChoice == "5":
+            orderBy = "viewCount"
+        else:
+            print("I don't have to tell you what to do...")
+
+    
+    print("You chose {}".format(orderBy))        
     print("----------------------------")
     print("Language/Keyword: {}".format(keyword))
     print("Video Amount: {}".format(videoAmount))
     print("Durations of Videos: {}".format(videoDuration))
+    print("Order by: {}".format(orderBy))
     print('Are you sure with this setting? Y/N')
     print('Warning: If you choose No, you are going to turn back to the beginning.')
     print("----------------------------")
@@ -100,7 +134,7 @@ def Main():
     yesorno = input("Y or N: ").lower()
     
     if yesorno.startswith("y"):
-        ytfetch(queryChoice,videoAmount,videoDuration,keyword)
+        ytfetch(queryChoice,videoAmount,videoDuration,keyword,orderBy)
     else:
         Main()
 
@@ -121,7 +155,7 @@ def Query(queryChoice):
         return query
     
 
-def ytfetch(queryChoice,videoAmount,videoDuration,keyword):
+def ytfetch(queryChoice,videoAmount,videoDuration,keyword,orderBy):
     apiKey = open('apikey.txt').read()
     iteration = 1
     dumpvideos = {}
@@ -147,7 +181,7 @@ def ytfetch(queryChoice,videoAmount,videoDuration,keyword):
                 
             query2_ = urllib.parse.quote_plus(query_)    
 
-            urlData = "https://www.googleapis.com/youtube/v3/search?key={}&maxResults={}&part=snippet&type=video&videoDuration={}&q={}".format(apiKey,maxresults,videoDuration,query2_)
+            urlData = "https://www.googleapis.com/youtube/v3/search?key={}&maxResults={}&part=snippet&type=video&videoDuration={}&order={}&q={}".format(apiKey,maxresults,videoDuration,orderBy,query2_)
             webURL = urllib.request.urlopen(urlData)
             data = webURL.read()
             encoding = webURL.info().get_content_charset('utf-8')
@@ -175,7 +209,7 @@ def ytfetch(queryChoice,videoAmount,videoDuration,keyword):
     
 
     with open('./json/{}.json'.format(jsonname), 'a') as outfile: 
-        dumpdump = {"Search": {"searchDate": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "queryChoice:": keyword, "videoAmount": videoAmount, "videoDuration": videoDuration}}
+        dumpdump = {"Search": {"searchDate": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "queryChoice:": keyword, "videoAmount": videoAmount, "videoDuration": videoDuration, "Order by": orderBy}}
         dumpdump.update({"Videos": dumpvideos})
         json.dump(dumpdump, outfile, indent=4, ensure_ascii = False)
 
